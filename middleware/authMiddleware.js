@@ -1,10 +1,16 @@
 const jwt = require("jsonwebtoken");
 
 module.exports = (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
+  const authHeader = req.headers.authorization;
 
-  if (!token) {
-    return res.status(401).json({ message: "No token provided" });
+  if (!authHeader) {
+    return res.status(401).json({ message: "Authorization header missing" });
+  }
+
+  const [type, token] = authHeader.split(" ");
+
+  if (type !== "Bearer" || !token) {
+    return res.status(401).json({ message: "Invalid auth format" });
   }
 
   try {
@@ -12,6 +18,6 @@ module.exports = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (err) {
-    res.status(403).json({ message: "Invalid token" });
+    return res.status(401).json({ message: "Token invalid or expired" });
   }
 };
