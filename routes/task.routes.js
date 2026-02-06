@@ -7,6 +7,10 @@ const auth = require("../middleware/authMiddleware");
 router.post("/", auth, async (req, res) => {
   const { title, priority } = req.body;
 
+  if (!title) {
+    return res.status(400).json({ message: "Title required" });
+  }
+
   const task = {
     title,
     priority,
