@@ -9,9 +9,11 @@ router.post("/login", (req, res) => {
     return res.status(400).json({ message: "Email required" });
   }
 
-  const token = jwt.sign({ email }, "SECRET_KEY", {
-    expiresIn: "1d",
-  });
+  const token = jwt.sign(
+    { email },
+    process.env.JWT_SECRET, // ✅ SAME SECRET EVERYWHERE
+    { expiresIn: "1d" }
+  );
 
   res.json({ token });
 });
